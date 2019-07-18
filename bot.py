@@ -33,7 +33,7 @@ async def lookup(term, channel):
             msg += '{}: {}\n'.format(n, anime.title)
             n += 1
 
-        botmsg = await channel.send(msg)
+        botmsg = await channel.send(msg) 
         reply = await client.wait_for('message')
         try:
             await channel.delete_messages([reply, botmsg])

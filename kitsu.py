@@ -21,13 +21,13 @@ def parse(response):
     for anime in response:
         title = anime['attributes']['canonicalTitle']
 
-        title_romaji = get_title_by_language_codes(
-            anime['attributes']['titles'],
-            ['en_jp']
-        )
         title_english = get_title_by_language_codes(
             anime['attributes']['titles'],
             ['en', 'en_us']
+        )
+        title_romaji = get_title_by_language_codes(
+            anime['attributes']['titles'],
+            ['en_jp']
         )
         title_japanese = get_title_by_language_codes(
             anime['attributes']['titles'],
@@ -43,8 +43,8 @@ def parse(response):
         parsed.append(Anime(
             title,
             title_english,
-            title_japanese, 
             title_romaji,
+            title_japanese,
             description,
             rating,
             image

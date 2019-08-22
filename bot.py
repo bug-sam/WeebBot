@@ -1,5 +1,7 @@
 import discord
 import kitsu
+import anilist
+import random
 
 client = discord.Client()
 
@@ -19,6 +21,10 @@ async def on_message(message):
     if message.content.startswith('!hello'):
         await message.channel.send('Please don\'t talk to me, {}, you filthy weeb.'.format(message.author))
 
+#    for word in message.contet.split(''):
+#        if word in weebWords:
+#            await message.channel.send(random.choice(weebResponses))
+
 
 async def lookup(term, channel):
     try:
@@ -35,9 +41,11 @@ async def lookup(term, channel):
 
         botmsg = await channel.send(msg) 
         reply = await client.wait_for('message')
+
         try:
             await channel.delete_messages([reply, botmsg])
             anime = response[int(reply.content) - 1]
+            anime.links = anilist.getLinks(anime.title)
             await channel.send(embed=anime.toEmbed())
         except Exception as e:
             await channel.send('error: {}'.format(e))

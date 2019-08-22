@@ -1,6 +1,6 @@
 from discord import Embed
 class Anime():
-    def __init__(self, title, english, romaji, japanese, description, rating, image):
+    def __init__(self, title, english, romaji, japanese, description, rating, image, links=None):
         self.title = title
         self.englishTitle = english
         self.romajiTitle = romaji 
@@ -8,6 +8,7 @@ class Anime():
         self.description = description
         self.rating = rating
         self.image = image
+        self.links = links
     
     def toEmbed(self):
         embed = Embed()
@@ -23,6 +24,9 @@ class Anime():
                 name='Score:',
                 value=self.rating,
                 inline=False
+            ).add_field(
+                name='Links',
+                value='[AniList]({}) [MAL]({})'.format(self.links['anilistUrl'], self.links['malUrl'])
             )
         
         return embed

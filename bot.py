@@ -1,5 +1,5 @@
 import discord
-import kitsu
+import apihandler
 import anilist
 import random
 
@@ -27,8 +27,9 @@ async def on_message(message):
 
 
 async def lookup(term, channel):
+    response = None
     try:
-        response = kitsu.searchForAnime(term)
+        response = apihandler.search(term)
     except Exception as e:
         await channel.send(e)
     
@@ -36,7 +37,7 @@ async def lookup(term, channel):
         msg = 'Please select an anime by responding with its number:\n'
         n = 1
         for anime in response:
-            msg += '{}: {}\n'.format(n, anime.title)
+            msg += '{}: {} ({})\n'.format(n, anime['title'], anime['year'])
             n += 1
 
         botmsg = await channel.send(msg) 
@@ -44,8 +45,8 @@ async def lookup(term, channel):
 
         try:
             await channel.delete_messages([reply, botmsg])
-            anime = response[int(reply.content) - 1]
-            anime.links = anilist.getLinks(anime.title)
+            animeId = response[int(reply.content) - 1]['id']
+            anime = apihandler.getAnime(animeId)
             await channel.send(embed=anime.toEmbed())
         except Exception as e:
             await channel.send('error: {}'.format(e))
@@ -53,4 +54,4 @@ async def lookup(term, channel):
         await channel.send(embed=response[0].toEmbed())
 
 if __name__ == '__main__':
-    client.run('NjAwNzYwNzQ0MDA2NTE2NzM2.XS4icg.rTGS9j8o5URxzY9xf4ds0uLZhi8')
+    client.run('')

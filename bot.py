@@ -17,9 +17,29 @@ async def on_message(message):
     if message.content.startswith('!lookup'):
         searchTerm = message.content.split(' ', 1)[1]
         await lookup(searchTerm, message.channel)
+    
+    if message.content.startswith('!recommend'):
+        animeId = message.content.split(' ', 2)[2]
+        user = message.mentions
+
+        helpMessage = 'Proper usage: `!recommend @user <id>`'
+        if len(user) != 1:
+            await message.channel.send(helpMessage)
+
+        try:
+            int(animeId)
+        except TypeError:
+            await message.channel.send(helpMessage + ' (<id> must be an int)')
+
+        await recommend(user[0], animeId, message.channel)
+
+    if message.content.startswith('!myrecommendations'):
+        userId = message.author.id
+
+        await getRecommendations(userId, message.channel)
 
     if message.content.startswith('!hello'):
-        await message.channel.send('Please don\'t talk to me, {}, you filthy weeb.'.format(message.author))
+        await message.channel.send('Please don\'t talk to me, {}, you filthy weeb.'.format(message.author.name))
 
 #    for word in message.contet.split(''):
 #        if word in weebWords:
@@ -52,6 +72,47 @@ async def lookup(term, channel):
             await channel.send('error: {}'.format(e))
     else:
         await channel.send(embed=response[0].toEmbed())
+
+async def recommend(user, animeId, channel):
+    anime = None
+    try:
+        anime = apihandler.getAnime(animeId)
+    except Exception as e:
+        await channel.send(e)
+
+    if not anime:
+        await channel.send('No anime found with id ' + animeId)
+    
+    anime.userId = user.id
+
+    try:
+        apihandler.postRecommendation(anime)
+        await channel.send('{} was recommended to {}'.format(anime.title if anime.title else anime.romaji, user.name))
+    except Exception as e:
+        await channel.send(e)
+
+async def getRecommendations(userId, channel):
+    recommendations = apihandler.getRecommendations(userId)
+
+    embed = discord.Embed()
+    recommendationList = ''
+
+    for anime in recommendations:
+        recommendationList += '{} - [AniList]({}) [MAL]({})\n'.format(
+            anime.title if anime.title else anime.romaji,
+            anime.anilistLink,
+            anime.malLink
+        )  
+
+    embed.add_field(
+        name='Recommendations:',
+        value=recommendationList,
+        inline=False
+    )
+    
+    await channel.send(embed=embed)
+
+
 
 if __name__ == '__main__':
     client.run('')

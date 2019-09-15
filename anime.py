@@ -1,7 +1,7 @@
 from discord import Embed
 
 class Anime:
-    def __init__(self, title, romaji, native, description, score, anilistLink, malLink, image, userId=None):
+    def __init__(self, title, romaji, native, description, score, anilistLink, malLink, image, animeId=None, userId=None):
         self.title = title
         self.romaji = romaji
         self.native = native
@@ -10,6 +10,7 @@ class Anime:
         self.anilistLink = anilistLink
         self.malLink = malLink
         self.image = image
+        self.animeId = animeId
         self.userId = userId
 
     def toEmbed(self):
@@ -33,9 +34,9 @@ class Anime:
                 inline=False
             ).add_field(
                 name='Links',
-                value='[AniList]({}) [MAL]({})'.format(self.anilistLink, self.malLink)
+                value='[AniList]({}) [MAL]({})\nid: {}'.format(self.anilistLink, self.malLink, self.animeId)
             )
-        
+            
         return embed
 
     def toDict(self):

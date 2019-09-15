@@ -41,10 +41,6 @@ async def on_message(message):
     if message.content.startswith('!hello'):
         await message.channel.send('Please don\'t talk to me, {}, you filthy weeb.'.format(message.author.name))
 
-#    for word in message.contet.split(''):
-#        if word in weebWords:
-#            await message.channel.send(random.choice(weebResponses))
-
 
 async def lookup(term, channel):
     response = None

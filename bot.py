@@ -1,6 +1,5 @@
 import discord
 import apihandler
-import anilist
 import random
 
 client = discord.Client()
